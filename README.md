@@ -2,10 +2,10 @@
 MSAN 622 Information Visualization
 ==================================
 
-|  **Name:** | Sophie Engle           |
+|  **Name:** | Evan Brydon           |
 |-----------:|:-----------------------|
-| **Email:** | <sjengle@cs.usfca.edu> |
-|   **Web:** | <http://msan622.github.io/spring-2015-msan622> |
+| **Email:** | <eabrydon@dons.usfca.edu> |
+|   **Web:** | <http://eabrydon.github.io/MSAN622> |
 
 ## About Me ##
 
