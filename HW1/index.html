@@ -41,7 +41,7 @@
 }
 
 </style>
-<body>
+<body style='margin-top:0;margin-left:0;margin-right:0;'>
 <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
           <div class="navbar-header">
@@ -155,9 +155,32 @@ var tip = d3.tip()
     })
 
 createbarchart(list);
-
 </script>
-
+<div style='margin-top:0;margin-left:50px;margin-right:50px;'>
+  <p>Here is a <a href="https://github.com/eabrydon/MSAN622/blob/gh-pages/HW1">link to the homework 1 code</a> The code is in index.html and some functions used are in functions.html </p> 
+  <div>
+    <p>C level changes </p>
+    <ul>
+      <li>Get letters from URL </li>
+      <li>Put letters into JS object</li>
+      <li>Log the decoded input string and counts object to the console </li>
+      <li>Basic Bar Chart</li>
+      <li>Change tick labels to whole numbers</li>
+      <li>Change number of ticks to be ~11 if counts get high</li>
+      <li>Color vowels differently than consonants</li>
+      <li>Sort alphabetically</li>
+      <li>Made X axis (barely) visible</li>
+    </ul>
+    <p>B Level Changes</p>
+    <ul>
+      <li>Add a tooltip to show the exact count for a bar when hovering over it</li>
+      <li>Change Bar color on mouseover with transitions back to original colors</li>
+    </ul>
+  </div>
+  <p>In terms of design, I didn't do anything very carefully because we were told that aesthetics didn't matter for this first assignment. I chose to limit the number of tick marks because 30 ticks on the y axis looks really stupid. I also made the tick labels be whole numbers because there will never be decimals in letter counts. Also, I chose to make the vowels purple bars and the consonants blue bars because those colors are pretty close together, but the vowels stick out a little bit. </p>
+  <p>I thought about making the vowel bars green, because green is the color of money and you have to buy vowels in wheel of fortune. the thought was that a letter counter bar chart isn't really useful but you could use it to analyze which letter you want to guess in wheel of fortune. Then I realized that would be stupid, so I didn't do that. </p>
+  <p>Most of the other design decisions are pretty arbitrary, like the bars turning orange on mouseover, the x axis being barely visible, etc. </p>
+</div>
 
 
 
