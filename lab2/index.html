@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+ 
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+    <title>D3 via Console</title>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+ 
+<body align="center">
+<script>
+var colors = {
+    "grey":   "#bbbbbb",
+    "blue":   "#377eb8",
+    "purple": "#984ea3",
+    "green":  "#4daf4a",
+    "orange": "#ff7f00"
+};
+
+var radius = 10;
+var margin = 10;
+var width  = 300;
+var height = 300;
+
+var id = 0;
+var n  = 5;
+
+var duration = 1000;
+
+var svg  = d3.select("body").append("svg");
+svg.attr("width", width);
+svg.attr("height", height);
+svg.style("border-color", colors.grey);
+svg.style("border-width", 1);
+svg.style("border-style", "solid");
+
+var plot = svg.append("g");
+plot.attr("transform", "translate(" + margin + "," + margin + ")");
+
+function random() {
+    id = id + 1;
+    // id = (id + 1) % (n + 1);
+    return {"x": Math.random(), "y": Math.random(), "id": id};
+}
+
+var data = d3.range(n).map(random);
+console.log("Data:", data);
+
+var x = d3.scale.linear()
+    .domain([0,1])
+    .range([0, width - 2 * margin]);
+
+var y = d3.scale.linear()
+    .domain([0,1])
+    .range([height- 2 * margin, 0])
+
+svg.on("click", tick);
+
+function tick() {
+    console.log("Tick:", data);
+
+    var curpoints = plot.selectAll("circle")
+        .data(data, function(d) {
+            return d.id;
+        });
+
+    var newpoints = curpoints.enter();
+    var oldpoints = curpoints.exit();
+
+    curpoints.transition()
+        .duration(duration)
+        .style("fill", colors.grey);
+
+    newpoints.append("circle")
+        .attr("cx", function(d) {return x(d.x); })
+        .attr("cy", function(d) {return x(d.y); })
+        .attr("r", radius)
+        .style("fill-opacity", 0)
+        .style("fill", colors.orange)
+        .transition()
+            .duration(duration)
+            .delay(function(d, i) {
+                return i * 100;
+            })
+            .style("fill-opacity", 1);
+
+    oldpoints.transition()
+        .duration(duration)
+        .style("fill", colors.green)
+        .each("end", function() {
+            d3.select(this).transition()
+                .duration(duration)
+                .style("fill-opacity", 0)
+                .remove();
+        });
+
+
+    // Update data
+    data.push(random());
+    data.shift();
+}
+</script>
+</body>
+</html>

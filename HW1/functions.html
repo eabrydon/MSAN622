@@ -1,0 +1,84 @@
+// make vowel a different color
+function vow(d) { 
+  if (d.vowel === true) {return colors.purple}
+  else {return colors.blue}
+};
+
+// function to alphabetize list
+function alphabetize(a,b) {
+  if (a.letter < b.letter)
+     return -1;
+  if (a.letter > b.letter)
+    return 1;
+  return 0;
+};
+
+// sort by item size
+function size_sort(a,b) {
+  if (a.count < b.count)
+    return 1;
+  if (a.count > b.count)
+    return -1;
+  return 0;
+};
+
+// creates bar chart from sorted list
+// need to already have everything but x axis set up
+createbarchart = function(sorted_list) {
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, w], .15)
+    .domain(letters);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var svg = d3.select("body").append("svg")
+    .attr("width", w + margin.left + margin.right)
+    .attr("height", h + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  svg.call(tip);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + h + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Count");
+
+  svg.selectAll(".bar")
+      .data(alphaList)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.letter); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return h - d.count/max*h; })
+      .attr("height", function(d) { return d.count/max*h; })
+      .attr("title", function(d) { return d.count; })
+      .attr("fill", function(d) {return(vow(d))})
+      .on("mouseover", function(d) {
+        tip.show(d)
+        d3.select(this)
+          .transition()
+          .duration(100)
+          .style("fill", colors.orange);
+      })
+      .on("mouseout", function(d) {
+        tip.hide(d)
+        d3.select(this)
+          .transition()
+          .duration(1000)
+          .style("fill", function(d) {return(vow(d))})
+      });
+  }
