@@ -20,6 +20,10 @@ body {
   font: 11px sans-serif;
 }
 
+svg {
+  font: 11px sans-serif;
+  padding: 10px;
+}
 .axis path,
 .axis line {
   fill: none;
@@ -30,10 +34,14 @@ body {
 .dot {
   stroke: #000;
 }
+.frame {
+  fill: none;
+  stroke: #aaa;
+}
 
 .tooltip {
   position: absolute;
-  width: 200px;
+  width: 100px;
   height: 28px;
   pointer-events: none;
 }
@@ -71,38 +79,13 @@ body {
           <p>Multivariate Data Visualization</p>
       </div>
   </div>
+  <div align = "center", id = "plot1"></div>
+  <div align = "center", id = "plot2"></div>
+  <!--<div align = "center", id = "plot3"></div> -->
 <script>
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
-
-// setup x 
-var xValue = function(d) { return d.income;}, // data -> value
-    xScale = d3.scale.linear().range([0, width]), // value -> display
-    xMap = function(d) { return xScale(xValue(d));}, // data -> display
-    xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-
-// setup y
-var yValue = function(d) { return d.lifespan;}, // data -> value
-    yScale = d3.scale.linear().range([height, 0]), // value -> display
-    yMap = function(d) { return yScale(yValue(d));}, // data -> display
-    yAxis = d3.svg.axis().scale(yScale).orient("left");
-
-// setup fill color
-var cValue = function(d) { return d.NSEW;},
-    color = d3.scale.category10();
-
-// add the graph canvas to the body of the webpage
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-// add the tooltip area to the webpage
-var tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
 
 function size_sort(a,b) {
     return b.pop - a.pop};
@@ -110,6 +93,34 @@ function size_sort(a,b) {
 // load data
 d3.csv("states.csv", function(error, data) {
 
+    // setup x 
+  var xValue = function(d) { return d.income;}, // data -> value
+      xScale = d3.scale.linear().range([0, width]), // value -> display
+      xMap = function(d) { return xScale(xValue(d));}, // data -> display
+      xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+
+  // setup y
+  var yValue = function(d) { return d.lifespan;}, // data -> value
+      yScale = d3.scale.linear().range([height, 0]), // value -> display
+      yMap = function(d) { return yScale(yValue(d));}, // data -> display
+      yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+  // setup fill color
+  var cValue = function(d) { return d.NSEW;},
+      color = d3.scale.category10();
+
+  // add the graph canvas to the body of the webpage
+  // change body to #area1
+  var svg = d3.select("#plot1").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  // add the tooltip area to the webpage
+  var tooltip = d3.select("#plot1").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
 
   // change string (from CSV) into number format
   data.forEach(function(d) {
@@ -121,7 +132,7 @@ d3.csv("states.csv", function(error, data) {
   // data = sort(size_sort);
 
   // don't want dots overlapping axis, so add in buffer to data domain
-  xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
+  xScale.domain([d3.min(data, xValue)*.95, d3.max(data, xValue)*1.02]);
   yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
 
   // x-axis
@@ -216,12 +227,107 @@ var def_opacity = .8
         .style("font-size", "32px") 
         .text("The Wealth and Health of States");
 });
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+var width2 = 960,
+    size = 150,
+    padding = 19.5;
 
+d3.csv("states.csv", function(error, data) {
+  var domainByTrait = {},
+      traits = ["income","illiteracy","lifespan","murder"],
+      n = traits.length;
 
+  traits.forEach(function(trait) {
+    domainByTrait[trait] = d3.extent(data, function(d) { return d[trait]; });
+  });
 
+  var x = d3.scale.linear()
+    .range([padding / 2, size - padding / 2]);
 
+  var y = d3.scale.linear()
+      .range([size - padding / 2, padding / 2]);
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom")
+      .ticks(5);
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left")
+      .ticks(5);
+
+  var color = d3.scale.category10();
+
+    // xAxis.tickSize(size * n);
+    // yAxis.tickSize(-size * n);
+
+  var svg = d3.select("#plot2").append("svg")
+      .attr("width", size * n + padding)
+      .attr("height", size * n + padding)
+    .append("g")
+      .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
+
+  svg.selectAll(".x.axis")
+      .data(traits)
+    .enter().append("g")
+      .attr("class", "x axis")
+      .attr("transform", function(d, i) { return "translate(" + (n - i - 1) * size + ",0)"; })
+      .each(function(d) { x.domain(domainByTrait[d]); d3.select(this).call(xAxis); });
+
+  svg.selectAll(".y.axis")
+      .data(traits)
+    .enter().append("g")
+      .attr("class", "y axis")
+      .attr("transform", function(d, i) { return "translate(0," + i * size + ")"; })
+      .each(function(d) { y.domain(domainByTrait[d]); d3.select(this).call(yAxis); });
+
+  var cell = svg.selectAll(".cell")
+      .data(cross(traits, traits))
+    .enter().append("g")
+      .attr("class", "cell")
+      .attr("transform", function(d) { return "translate(" + (n - d.i - 1) * size + "," + d.j * size + ")"; })
+      .each(plot);
+
+  // Titles for the diagonal.
+  cell.filter(function(d) { return d.i === d.j; }).append("text")
+      .attr("x", padding)
+      .attr("y", padding)
+      .attr("dy", ".71em")
+      .text(function(d) { return d.x; });
+
+  function plot(p) {
+    var cell = d3.select(this);
+
+    x.domain(domainByTrait[p.x]);
+    y.domain(domainByTrait[p.y]);
+
+    cell.append("rect")
+        .attr("class", "frame")
+        .attr("x", padding / 2)
+        .attr("y", padding / 2)
+        .attr("width", size - padding)
+        .attr("height", size - padding);
+
+    cell.selectAll("circle")
+        .data(data)
+      .enter().append("circle")
+        .attr("cx", function(d) { return x(d[p.x]); })
+        .attr("cy", function(d) { return y(d[p.y]); })
+        .attr("r", 3)
+        .style("opacity", .7)
+        .style("fill", function(d) { return color(d.NSEW); });
+  }
+
+  function cross(a, b) {
+    var c = [], n = a.length, m = b.length, i, j;
+    for (i = -1; ++i < n;) for (j = -1; ++j < m;) c.push({x: a[i], i: i, y: b[j], j: j});
+    return c;
+  }
+
+  d3.select(self.frameElement).style("height", size * n + padding + 20 + "px");
+});
 
 
 
