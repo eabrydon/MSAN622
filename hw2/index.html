@@ -17,7 +17,7 @@
 
 <style>
 body {
-  font: 11px sans-serif;
+  font: 16px sans-serif;
 }
 
 svg {
@@ -230,12 +230,12 @@ var def_opacity = .8
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var width2 = 960,
-    size = 150,
+    size = 200,
     padding = 19.5;
 
 d3.csv("states.csv", function(error, data) {
   var domainByTrait = {},
-      traits = ["income","illiteracy","lifespan","murder"],
+      traits = ["illiteracy","lifespan","HS_grad"],
       n = traits.length;
 
   traits.forEach(function(trait) {
@@ -265,7 +265,7 @@ d3.csv("states.csv", function(error, data) {
 
   var svg = d3.select("#plot2").append("svg")
       .attr("width", size * n + padding)
-      .attr("height", size * n + padding)
+      .attr("height", size * n + padding*2)
     .append("g")
       .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
 
@@ -273,7 +273,7 @@ d3.csv("states.csv", function(error, data) {
       .data(traits)
     .enter().append("g")
       .attr("class", "x axis")
-      .attr("transform", function(d, i) { return "translate(" + (n - i - 1) * size + ",0)"; })
+      .attr("transform", function(d, i) { return "translate(" + (n - i - 1) * size + "," + size*n + ")"; })
       .each(function(d) { x.domain(domainByTrait[d]); d3.select(this).call(xAxis); });
 
   svg.selectAll(".y.axis")
@@ -318,6 +318,34 @@ d3.csv("states.csv", function(error, data) {
         .attr("r", 3)
         .style("opacity", .7)
         .style("fill", function(d) { return color(d.NSEW); });
+      var legend = svg.selectAll(".legend")
+      .data(color.domain())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  // draw legend colored rectangles
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  // draw legend text
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d;})
+
+  // add title    
+  svg.append("text")
+        .attr("x", (width / 5) )            
+        .attr("y", 5)
+        .attr("text-anchor", "center")  
+        .style("font-size", "32px") 
+        .text("Scatterplot Matrix");
   }
 
   function cross(a, b) {
@@ -332,6 +360,12 @@ d3.csv("states.csv", function(error, data) {
 
 
 </script>
+<div style='margin-top:0;margin-left:50px;margin-right:50px;'>
+  <p>Here is a <a href="https://github.com/eabrydon/MSAN622/blob/gh-pages/hw2">link to the homework 2 code</a> The code is in index.html.</p> 
+  <p>The bubble chart was inspired by <a href="http://bost.ocks.org/mike/nations/">The Wealth and Health of Nations</a>. I used the same axes and bubble size - life expectancy, per-capita income, and population as that graph. I color coded the states by region in the US. As this plot is static, unlike the other one, I changed the mouseover functionality a little bit. I also lowered the opacity a bit, as I wanted to use larger bubbles for this chart. There are fewer states in the US than there are countries in the world, so I thought larger bubbles would be appropriate, but there was significant overlap.</p>
+  <p>For the small multiples, I did a grid scatter plots. I thought this would be interesting because many of the variables in the dataset seem to be heavily correlated. I chose variables that I thought might have correlation. As you can see from the plot, there is a fairly strong negative correlation between life expectancy and high school graduation rate. One design decision I made was to remove grid lines from the plot. I did this because these plots are generally used to visually inspect datasets to see correlations between variables. Grid lines are nice for being able to see exact values, but in this case exact values are more or less irrelevant. </p>
+  
+</div>
 </body>
 </html>
 
