@@ -8,6 +8,8 @@ df <- data.frame(
 )
 names(df) <- c("name","abbr", 'pop','income','illiteracy',"lifespan",
                "murder", "HS_grad","frost_days","area","NSEW","region")
+
+
 write.csv(
   df, 
   file = "states.csv", 
