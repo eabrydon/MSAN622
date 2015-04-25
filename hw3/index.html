@@ -52,6 +52,9 @@
       fill:white;
       stroke:black;
       opacity:0.8;}
+    #explanation {
+      font: 14px sans-serif;
+    }
 
 </style>
 <body style='margin-top:0;margin-left:0;margin-right:0;'>
@@ -277,8 +280,8 @@ d3.csv("sbline.csv", function(error, data) {
   });
 
 </script>
-<div style='margin-top:0;margin-left:50px;margin-right:50px;'>
-  <p>Here is a <a href="https://github.com/eabrydon/MSAN622/blob/gh-pages/hw3">link to the code for this assignment</a> The code is in index.html. This assignment is to make two plots that incorporate a time series element from the "Seatbelts" data from R. The data is a multiple time series of monthly injury and death data related to auto accidents in the UK from 1969 to 1984. The UK implemented a law that made wearing seatbelts compulsory in January 1983, hence the name of the data set.  </p> 
+<div id = 'explanation', style='margin-top:0;margin-left:50px;margin-right:50px;'>
+  <p>Here is a <a href="https://github.com/eabrydon/MSAN622/blob/gh-pages/hw3">link to the code for this assignment</a>. The code is in index.html. This assignment is to make two plots that incorporate a time series element from the "Seatbelts" data from R. The data is a multiple time series of monthly injury and death data related to auto accidents in the UK from 1969 to 1984. The UK implemented a law that made wearing seatbelts compulsory in January 1983, hence the name of the data set.  </p> 
   <p>The first plot is a circular heatmap of total serious injuries per 1000 kilometers driven. I summed up all the injuries to drivers and passengers and divided by the number of kilometers driven. To be perfectly honest, I'm just assuing the data is total kilometers driven in the UK that month in thousands. The documentation on the data is terrible but I think it makes the plot more interesting when we normalize it by distance driven. This way we can see when people are actually getting injured more or less often per kilometer driven, and not just driving more. As we can see, injuries per kilometer in the UK steadily declines over the whole time period, but falls precipitously after the seatbelt law is enacted. Further, we can see that the injury rate is higher in the winter months, presumably due to inclement weather conditions. </p>
   <p>For the circular heat map, I coded more injuries to have a red color and fewer injuries to have a light blue color. The red is more vibrant, whcih I think works because there are fewer tiles in the heatmap with many injuries. My hope is that the viewer associate red with blood and more injuries, and interpret the light blue as benign. </p>
   <p>The second plot is an area chart showing the number of serious injuries or deaths to drivers over time. One interesting thing to note is that injuries to drivers are decline across the whole time period, and seem to drop even more after the enactment of the seatbelt law in January 1983.</p>
