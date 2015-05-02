@@ -15,7 +15,35 @@
   <link href="../css/bootstrap-theme.min.css" rel="stylesheet">
 </head>
 <style>
+body {
+    font: 16px sans-serif;
+    }
 
+    svg {
+      font: 11px sans-serif;
+      padding: 10px;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+    }
+
+    .dot {
+      stroke: #000;
+    }
+    .frame {
+      fill: none;
+      stroke: #aaa;
+    }
+
+    .tooltip {
+      position: absolute;
+      width: 200px;
+      height: 28px;
+      pointer-events: none;
+    }
     #explanation {
       font: 14px sans-serif;
     }
@@ -50,9 +78,14 @@
   </nav>
   <div class="jumbotron">
       <div class="container">
-          <h1>Homework 3</h1>
+          <h1>Homework 4</h1>
           <p>Movies Dashboard</p>
       </div>
+  </div>
+  <div align = "center">
+      <H2>Movie Length vs Rating</H2>
+      <H4>Bubble size is proportional to number of ratings</H4>
+      <div align = "center", id = "plot1"></div>
   </div>
   <script>
     d3.json("movies.json", function(error, json) {
@@ -64,10 +97,149 @@
 
 <script type='text/javascript' src='https://public.tableau.com/javascripts/api/viz_v1.js'></script><div class='tableauPlaceholder' style='width: 654px; height: 742px;'><noscript><a href='#'><img alt='Dashboard 1 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ho&#47;Homework4_9&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz' width='654' height='742' style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='site_root' value='' /><param name='name' value='Homework4_9&#47;Dashboard1' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ho&#47;Homework4_9&#47;Dashboard1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='showVizHome' value='no' /><param name='showTabs' value='y' /><param name='bootstrapWhenNotified' value='true' /></object></div>
   </script>
+<script>
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+function size_sort(a,b) {
+    return b.pop - a.pop};
+
+// load data
+d3.csv("moviesNew.csv", function(error, data) {
+
+    // setup x 
+  var xValue = function(d) { return d.Length;}, // data -> value
+      xScale = d3.scale.linear().range([0, width]), // value -> display
+      xMap = function(d) { return xScale(xValue(d));}, // data -> display
+      xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+
+  // setup y
+  var yValue = function(d) { return d.rating;}, // data -> value
+      yScale = d3.scale.linear().range([height, 0]), // value -> display
+      yMap = function(d) { return yScale(yValue(d));}, // data -> display
+      yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+  // setup fill color
+  var cValue = function(d) { return d.mpaa;},
+      color = d3.scale.category10();
+
+  // add the graph canvas to the body of the webpage
+  // change body to #area1
+  var svg = d3.select("#plot1").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  // add the tooltip area to the webpage
+  var tooltip = d3.select("#plot1").append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
+
+  // change string (from CSV) into number format
+  data.forEach(function(d) {
+    d.Rating = +d.rating;
+    d.Votes = +d.votes
+    d.Length = +d.length;
+//    console.log(d);
+  });
+  // data = sort(size_sort);
+
+  // don't want dots overlapping axis, so add in buffer to data domain
+  xScale.domain([d3.min(data, xValue)*.95, d3.max(data, xValue)*1.02]);
+  yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+console.log(d3.min(data, xValue))
+  // x-axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Income");
+
+  // y-axis
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Life Expectancy");
+
+var def_opacity = .8
+
+  // draw dots
+  svg.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", function(d) {return Math.sqrt(d.Votes)/15})
+      .attr("cx", xMap)
+      .attr("cy", yMap)
+      .style("opacity", def_opacity)
+      .style("fill", function(d) { return color(cValue(d));}) 
+      .sort(size_sort)
+      .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(300)
+               .style("opacity", 1);
+          tooltip.html(d.title + "<br/>Length:" + xValue(d) + ", Avg Rating: " + yValue(d))
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px")
+          d3.select(this)
+            .transition()
+            .duration(300)
+            .style("opacity", 1)
+            .style("stroke","#d3d3d3");
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(500)
+               .style("opacity", 0)
+          d3.select(this)
+            .transition()
+            .duration(300)
+            .style("opacity", def_opacity)
+            .style("stroke","#000");
+      });
+
+  // draw legend
+  var legend = svg.selectAll(".legend")
+      .data(color.domain())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  // draw legend colored rectangles
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("y", 300)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  // draw legend text
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 309)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function(d) { return d;})
+
+});
+</script>
 <div id = 'explanation', style='margin-top:0;margin-left:50px;margin-right:50px;'>
   <p>Here is a <a href="https://github.com/eabrydon/MSAN622/blob/gh-pages/hw4">link to the code for this assignment</a>. The code is in index.html. This assignment is to make a dashboard using data from the "Movies" data from the R package ggplot2. The data is from IMDB, which is suposedly the most comprehensive movie database on the web. The only requiements for inclusion was that at least one user had to have reviewed a movie. Originally, the dataset was close to 60,000 rows, which would be a bit large to do interactive visualizations with in D3. For these visualizations I am using a subset where all moives have an MPAA rating and came out after 1998. The data only includes movies from the 1930s to 2006, so we are using a fairly cross-sectional chuck of data. This subset is 2,230 movies. The only other preprocessing I did in R that I ended up using was to remove the columns giving a rounded percent of people that gave the movie different rating, because the rounding was too extreme.  </p> 
   <p>The top plot is a bubble chart that shows average ratings for movies on the x axis, MPAA rating as the color, and the size of the bubble correlates to the number of user ratings for the movie. The stacked line chart shows the average number of user ratings for movies as the value for average rating changes. The pie chart shows the proportion of movies in the subset that have different MPAA ratings.  </p>
-  <p> </p>
-  <p></p>
+  <p>I kept the colors the same throughout the tableau dashboard and had all 3 plots share the same legend. I thought this would be a nice way to not overload the viewer with information. </p>
+  <p>I obviously didn't do a good job on this assignment - I wasted too time converting the genre catergory from a bunch of dummy variables to a list in R, and writing a json file. The problem with this is that Tableau can't use json files, and I didn't want to spend a bunch more time figuring out a workaround in Tableau. So in the end I just didn't use genre as a variable.</p>
   
 </div>
