@@ -274,7 +274,7 @@ function symbolMap() {
             });
 
         updateLog(d.City + ", " + d.Country +
-            ": " + d.attacktype + " attack with " + d.nkill + " killed and " + d.nwound + " wounded");
+            ":\n" + d.attacktype + " attack with " + d.nkill + " killed and " + d.nwound + " wounded on " + d.Date);
     }
 
     // called on mouseout
