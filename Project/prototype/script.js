@@ -39,8 +39,10 @@ function symbolMap() {
 
     var lookup = {};
 
-    // var width = 960,
-    //     height = 960;
+    var color = d3.scale.linear()
+        .domain([0, 300])
+        .range(["#b2e2e2", "#006d2c"])
+        .interpolate(d3.interpolateLab);
 
     var projection = d3.geo.mercator();
         // .scale((width + 1) / 2 / Math.PI)
