@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Information Visualization</title>
+    <script src="../d3/d3.min.js" charset="utf-8"></script>
+<!--     // <script src="../d3/d3.legend.js" charset="utf-8"></script>
+    // <script src="../d3-tip/index.js" charset="utf-8"></script> -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="../js/topojson.v1.min.js"></script>
+    <script src="script.js"></script>
+</head>
+<style>
+    body {
+        font: 16px sans-serif;}
+    #explanation {
+        position: static;
+        width: 800px;
+    }
+    #log {
+        position: static;
+        width: 500px;
+    }
+    #map {
+        display: block;
+    }
+</style>
+<body style='margin-top:0;margin-left:0;margin-right:0;'>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle Navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://eabrydon.github.io/MSAN622">MSAN 622</a>
+            </div>
+
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="http://eabrydon.github.io/MSAN622/#homework">Homework</a></li>
+                    <li><a href="http://eabrydon.github.io/MSAN622/#project">Project</a></li>
+                    <li><a href="http://eabrydon.github.io/MSAN622/#participation">Participation</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="http://eabrydon.github.io/MSAN622/#about">About</a></li>
+                    <li><a href="http://eabrydon.github.io/MSAN622/#contact">Contact</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Homework 4</h1>
+            <p>World Map with Earthquakes</p>
+        </div>
+    </div>
+    <div class="container text-center" id = "plot1">
+            <svg id="map" width="960" height="600"></svg>
+            <p id="log">Loading map... please wait.</p>
+        
+    </div>
+    <div id = 'explanation', style='margin-top:50;margin-left:50px;margin-right:50px;'>
+<script>
+/*
+ * For sample TopoJSON files, go to:
+ * https://gist.github.com/mbostock/4090846
+ */
+var base = "https://gist.githubusercontent.com/mbostock/4090846/raw/";
+var url = {
+    world: base + "world-50m.json",
+    earthquakes: "4.5_month.csv"
+};
+// Uses reusable chart model
+// See http://bost.ocks.org/mike/chart/
+var chart = symbolMap();
+
+// Update how we access data (need the mag property)
+chart = chart.value(function(d) { return d.mag; });
+
+// Nested calls to trigger drawing in proper order
+d3.json("world-50m.json", function(mapError, mapJSON) {
+    if (processError(mapError)) return;
+
+    // update map data
+    chart = chart.map(mapJSON);
+
+    // Wait until the map is drawn before loading
+    // and drawing the data values
+    d3.csv(url.earthquakes, function(dataError, dataJSON) {
+        if (processError(dataError)) return;
+
+        chart = chart.values(dataJSON);
+        chart("map");
+    });
+});
+
+// Load state lookup information
+// Possible some lookups will fail until this loads
+// d3.tsv(url.states, parseStateName, function(error, data) {
+//         if (processError(error)) return;
+//         chart = chart.lookup(data);
+//     }
+// );
+
+</script>
+   <div id = 'explanation', style='margin-top:650;margin-left:50px;margin-right:50px;'>
+        <H4>Functionality Summary</H4>
+        <p>For B level functionality, I changed the color based on the depth of the earthquake, and changed the tooltip to display relevant data about the earthquake. </p>
+    </div>
+</body>
+</html>
