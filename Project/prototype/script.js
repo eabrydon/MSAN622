@@ -27,29 +27,22 @@ function processError(error) {
  * Parses us-state-names.tsv into components.
  * Used by d3.tsv() function.
 */
-function parseStateName(row) {
-    return {
-        id: +row.id,
-        name: row.name.trim(),
-        code: row.code.trim().toUpperCase()
-    };
-}
 
 function symbolMap() {
 
     var lookup = {};
 
-    var color = d3.scale.linear()
-        .domain([0, 300])
-        .range(["#b2e2e2", "#006d2c"])
-        .interpolate(d3.interpolateLab);
+    var color = d3.scale.ordinal()
+        .domain(['Armed Assault','Assassination','Bombing/Explosion','Facility/Infrastructure Attack',
+            'Hijacking','Hostage Taking (Barricade Incident)','Hostage Taking (Kidnapping)','Unarmed Assault'])
+        .range(["#b2e2e2", "#006d2c"]);
 
     var projection = d3.geo.mercator();
         // .scale((width + 1) / 2 / Math.PI)
         // .translate([width / 2, height / 2])
         // .precision(.1);
 
-    var radius = d3.scale.sqrt().range([5, 15]);
+    var radius = d3.scale.sqrt().range([2,18]);
 
     var log = d3.select("#log");
 
@@ -125,7 +118,7 @@ function symbolMap() {
             .enter()
             .append("circle")
             .attr("r", function(d, i) {
-                return radius(value(d));
+                return radius(d.nwound);
             })
             .attr("cx", function(d, i) {
                 // projection takes [longitude, latitude]
