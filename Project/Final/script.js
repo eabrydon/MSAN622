@@ -54,6 +54,7 @@ function symbolMap() {
     var value = function(d) { return d.value; };
 
     function chart(id) {
+
         if (map === null || values === null) {
             console.warn("Unable to draw symbol map: missing data.");
             return;
@@ -62,6 +63,7 @@ function symbolMap() {
         updateLog("Drawing map... please wait.");
 
         var svg = d3.select("svg#" + id);
+
         var bbox = svg.node().getBoundingClientRect();
 
         // update project scale

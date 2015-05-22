@@ -77,6 +77,7 @@
 		<svg id="casualties" class="ts" width="10" height="10"></svg>
 		<svg id="map" align="center" width="960" height="475"></svg>
 		<p id="log" align="center">Loading map... please wait.</p>
+        <svg id="bar" align="center" width="10" height="10"></svg>
         <div id = 'explanation', style='margin-top:50;margin-left:50px;margin-right:50px;'>
             <H4>Discussion</H4>
             <br>
@@ -91,7 +92,7 @@
             <p>The main challenge I had in this project was gettting the brushed data from the first plot to be the only data shown in the second plot. This involved adapting code from a completely unrelated force layout plot. This challenge ate up a ton of time and energy because the example I was working from was different in so many ways; the data is in a different format and not being read from an external file, the plot is different, the intended animation is completely different, and the animation in the exampleis using a package to draw the plot so the code is much simpler. <br>Other than that, I had originally intended to make a couple time series plots using one selector bar, but couldn't get it to work the way I wanted. As a result, I had to change my planned layout at the last minute. While this wasn't ideal, in the end it was fine. </p>
             <H5>Conclusion</H5>
             <p>In closing, I'm not a big fan of d3 and one of my main takeaways from this course is that Tableau is awesome. Personally, I love to be able to create a good visualization quickly, and I don't have quite enough passion for visualization to take a week to make an excellent d3 visual. I guess my work over the course of this module reflects that. The most disappointing part of this class for me is that I'm not really proud of any of my visualizations. I obviously have no one to blame for this but myself, but it still leaves me feeling dissatisfied. Maybe this is a lesson about data science in general - or even life in general -  and I should just learn to be happy with what I've done, even if it isn't perfect.</p>
-    </div>
+        </div>
 	</div>
 	<script type="text/javascript">
 
@@ -216,6 +217,10 @@
 
 
                         // update map data
+                d3.select("#map")
+                    .selectAll("*")
+                    .remove()
+
                 chart = chart.map(mapJSON);
 
                 d3.csv("../Dataset/data.csv", function(dataError, dataJSON) {
