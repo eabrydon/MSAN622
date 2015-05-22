@@ -42,7 +42,7 @@ function symbolMap() {
         // .translate([width / 2, height / 2])
         // .precision(.1);
 
-    var radius = d3.scale.sqrt().range([2,18]);
+    var radius = d3.scale.sqrt().range([2,30]);
 
     var log = d3.select("#log");
 
@@ -88,8 +88,6 @@ function symbolMap() {
         var symbols = svg.append("g").attr("id", "dots");
 
         // show that only 1 feature for land
-        console.log(topojson.feature(map, map.objects.land));
-
         // show that we have an array of features for states
         // console.log(topojson.feature(map, map.objects.states));
 
@@ -128,6 +126,8 @@ function symbolMap() {
             .attr("cy", function(d, i) {
                 return projection([d.Longitude, d.Latitude])[1];
             })
+            .sort(size_sort)
+
             .classed({"symbol": true})
             .on("mouseover", showHighlight)
             .on("mouseout", hideHighlight);
@@ -269,7 +269,7 @@ function symbolMap() {
             });
 
         updateLog(d.City + ", " + d.Country +
-            ":\n" + d.attacktype + " attack with " + d.nkill + " killed and " + d.nwound + " wounded on " + d.Date);
+            ":\n" + d.attacktype + " with " + d.nkill + " killed and " + d.nwound + " wounded on " + d.Date);
     }
 
     // called on mouseout

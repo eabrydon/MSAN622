@@ -31,7 +31,7 @@
         margin-left: 12%;
     }
 </style>
-<body style='margin-top:0;margin-left:0;margin-right:0;'>
+<body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -90,7 +90,7 @@
         chart = chart.value(function(d) { return d.nkill; });
 
         // Nested calls to trigger drawing in proper order
-        d3.json("world-50m.json", function(mapError, mapJSON) {
+        d3.json("../Dataset/world-50m.json", function(mapError, mapJSON) {
             if (processError(mapError)) return;
 
             // update map data
@@ -98,9 +98,9 @@
 
             // Wait until the map is drawn before loading
             // and drawing the data values
-            d3.csv("data.csv", function(dataError, dataJSON) {
+            d3.csv("../Dataset/data.csv", function(dataError, dataJSON) {
                 if (processError(dataError)) return;
-
+                console.log(dataJSON)
                 chart = chart.values(dataJSON);
                 chart("map");
             });

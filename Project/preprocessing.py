@@ -34,7 +34,7 @@ filtered4 = np.array(filter(lambda x: x[0] > 0 and x[1] > 0 and x[2] > 0,
 
 date = map(lambda x: '-'.join([str(x[1]), str(x[0]), str(x[2])]), filtered4)
 z = zip(date,filtered4)
-final_data = [np.append(atk[1][3:11],atk[0])for atk in zip(date,filtered4)]
+final_data = [np.append(atk[1][3:11],atk[0])for atk in z]
 
 
 header = ['Country','Region','City','Longitude','Latitude','attacktype',
@@ -44,6 +44,9 @@ df = pd.DataFrame(final_data, columns = header)
 df['ntotal'] = df['nwound'] + df['nkill']
 df.to_csv('data.csv')
 
+'''
+EDA/messing around with stuff
+'''
 d = {}
 for i in data:
     try:
@@ -68,3 +71,33 @@ for i in final_data:
         country[i[0]] += 1
     except:
         country[i[0]] = 1
+        
+months = {}
+for i in final_data:
+    if i[6] > -1 and i[7] > -1:
+        try:
+            try:
+                months[i[8]]['killed'] += int(i[6])
+            except:
+                months[i[8]]['killed'] = int(i[6])
+            try:
+                months[i[8]]['wounded'] += int(i[7])
+            except:
+                months[i[8]]['wounded'] = int(i[7])
+        except:
+            months[i[8]] = {'killed':int(i[6]),'wounded':int(i[7])}
+            
+final_data_2 = [[key, months[key]['killed'], months[key]['wounded']] for key in months]
+header2 = ['month','killed','wounded']
+df2 = pd.DataFrame(final_data_2, columns = header2)
+df2['month'] = [pd.to_datetime(m) for m in df2['month']]
+df2 = df2.sort('month')
+
+df2.to_csv('data2.csv')
+
+
+
+            
+            
+    
+    
