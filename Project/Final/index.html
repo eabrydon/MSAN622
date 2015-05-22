@@ -8,6 +8,7 @@
     <link href="../../css/bootstrap-theme.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="style.css">
     <script src="../../js/topojson.v1.min.js"></script>
+    <script src="../../d3/circularHeatChart.js" charset="utf-8"></script>
     <script src="script.js"></script>
 </head>
 <style type="text/css">
@@ -69,27 +70,29 @@
             <p>World Map with Terror Attacks</p>
         </div>
     </div>
-    <div id="block">
+    <div id="block" align="center">
 	    <h4 align="center">Monthly Deaths From Terrorism</h4>
-	    <h6 align="center">Select a time period on the smaller plot below to see a specific time period</h6>
+	    <h6 align="center">Select a time period on the smaller plot below to see a subset of the data displayed on the map</h6>
 		<svg id="chart2" class="ts" width="10" height="10"></svg>
-		<h6 align="center">Major terror attacks from the selected time period are displayed on the world map</h6>
+		<h5 align="center">Major terror attacks from the selected time period are displayed on the world map</h5>
+        <h6 align="center">Hover over points for more information below</h6>
 		<svg id="casualties" class="ts" width="10" height="10"></svg>
 		<svg id="map" align="center" width="960" height="475"></svg>
-		<p id="log" align="center">Loading map... please wait.</p>
-        <svg id="bar" align="center" width="10" height="10"></svg>
-        <div id = 'explanation', style='margin-top:50;margin-left:50px;margin-right:50px;'>
+		<h5 id="log" align="center">Loading map... please wait.</h5>
+        <p>Circular Heat Chart showing monthly terrorism fatalities</p>
+        <div id = "heat"></div>
+        <div align="left" id = 'explanation', style='margin-top:50;margin-left:50px;margin-right:50px;'>
             <H4>Discussion</H4>
             <br>
             <H5>Techniques</H5>
-            <p>The first technique is a time series area plot with the ability to select a time period to zoom in on. The second technique is a map using topoJSON. The size of the dots is proportional to the number of people killed in the attack.</p>
+            <p>The first technique is a time series area plot with the ability to select a time period to zoom in on. I adapted the code from some example code created by <a href="http://bost.ocks.org/mike/">Mike Bostock</a>. The second technique is a map using topoJSON. I adapted this code from homework 5 and <a href="http://sjengle.cs.usfca.edu/">Sophie Engle</a>'s <a href="https://gist.github.com/sjengle/ac9c5e4ad3a750197149">topoJSON demo</a> block. The size of the dots is proportional to the number of people killed or wounded in the attack, depending on which is larger. The third technique is a circular heat chart that shows the number of people killed in terrorist attack monthly. I used a package called <a href="http://prcweb.co.uk/circularheatchart/">CircularHeatChart</a> for the third plot. If you want to look at the code I wrote to produce this page, <a href="https://github.com/eabrydon/MSAN622/tree/gh-pages/Project/Final">here is a link to my code on Github</a>, or you can simply check out the source code for this page through your web browser.</p>
             <H5>Interactivity</H5>
-            <p>The first chart allow the user to select a time period in the smaller bottom plot and the to plot will display only the selected time period. The default is to show the entire time period, and to reset the plot the user can simply click outside the selected area in the small chart. The second chart has a tooltip that allows the user to hover over a dot that represents an attack and see information about the attack. The displayed information is the city and country the attack took place in, the type of attack, the number of people killed and wounded in the attack, and the date it occured. The smaller dots are displayed after the larger dots, so the user can scroll over just about every dot to get more information about the attack.</p>
+            <p>The first chart allow the user to select a time period in the smaller bottom plot and the to plot will display only the selected time period. The default is to show the entire time period, and to reset the plot the user can simply click outside the selected area in the small chart. The second chart has a tooltip that allows the user to hover over a dot that represents an attack and see information about the attack. The displayed information is the city and country the attack took place in, the type of attack, the number of people killed and wounded in the attack, and the date it occured. The smaller dots are displayed after the larger dots, so the user can scroll over just about every dot to get more information about the attack. Note that the points displayed on the map are only major terror attacks, where are least 30 people total were wounded or killed. The reason for this is that d3 doesn't handle large amounts of data very well, and the dataset starts with over 125,000 rows. By subsetting down to limit it to major attacks, I am using ust over 2000 points. Even so, d3 isn't handling the amount of data very well, undoubtedly due to shoddy coding on my part. The third chart has a tooltip.</p>
             <H5>Feedback</H5>
             <p>I'm not entirely sure what feedback should be going here so I'll just spew some random thoughts about this assignment and the class in general. I think this class was extremely ambitious in it's goals, considering most of the students - myself included - had little to no javascript or html experience. To try to learn how html, javascript, and D3 work in a seven week course was not really a realistic goal in my opinion, and now at the conclusion of the course I still don't feel that I have come close to mastering the material. As a result of not having time to learn enough javascript or d3, I feel like I don't understand what my code is doing all the time. This made making custom visualizations excrutiatingly difficult. Basically what I'm saying is this class made my life hell this module more than any other class has in any module. </p>
             <p>In terms of this final project, I thought it was a good project that gave us freedom to create interesting visualizations about whatever dataset we wanted. This assignment was definitely a learning experience. However, I'm not sure I learned anything about information visualization outside of D3 from this project, which seems odd for a final in a class called information visualization. </p>
             <H5>Challenges</H5>
-            <p>The main challenge I had in this project was gettting the brushed data from the first plot to be the only data shown in the second plot. This involved adapting code from a completely unrelated force layout plot. This challenge ate up a ton of time and energy because the example I was working from was different in so many ways; the data is in a different format and not being read from an external file, the plot is different, the intended animation is completely different, and the animation in the exampleis using a package to draw the plot so the code is much simpler. <br>Other than that, I had originally intended to make a couple time series plots using one selector bar, but couldn't get it to work the way I wanted. As a result, I had to change my planned layout at the last minute. While this wasn't ideal, in the end it was fine. </p>
+            <p>The main challenge I had in this project was gettting the brushed data from the first plot to be the only data shown in the second plot. This involved adapting code from a completely unrelated force layout plot. This challenge ate up a ton of time and energy because the example I was working from was different in so many ways; the data is in a different format and not being read from an external file, the plot is different, the intended animation is completely different, and the animation in the exampleis using a package to draw the plot so the code is much simpler. Further, the way the code was set up, I couldn't get the plot to update smoothly, so I have jerky transitions when brushing. If the javascript console was more powerful or I was using a lot less data this wouldn't be an issue, but it looks pretty bad. <br>Other than that, I had originally intended to make a couple time series plots using one selector bar, but couldn't get it to work the way I wanted. As a result, I had to change my planned layout at the last minute. For the circular heat chart, while using the package made it much, much easier, I did have to do significant adaptation of the code. Also, the example code didn't include a real tooltip, so I had to implement that myself. This seems to be a weaker point of some packages - when you want to add things it tends to be more difficult because you don't know exactly how the underlying code is working.</p>
             <H5>Conclusion</H5>
             <p>In closing, I'm not a big fan of d3 and one of my main takeaways from this course is that Tableau is awesome. Personally, I love to be able to create a good visualization quickly, and I don't have quite enough passion for visualization to take a week to make an excellent d3 visual. I guess my work over the course of this module reflects that. The most disappointing part of this class for me is that I'm not really proud of any of my visualizations. I obviously have no one to blame for this but myself, but it still leaves me feeling dissatisfied. Maybe this is a lesson about data science in general - or even life in general -  and I should just learn to be happy with what I've done, even if it isn't perfect.</p>
         </div>
@@ -102,6 +105,8 @@
             return Math.max(b.nkill, b.nwound) - Math.max(a.nkill,a.nwound)};
 
         var chart = symbolMap();
+
+        var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
             // Update how we access data (need the mag property)
         chart = chart.value(function(d) { return Math.max(d.nkill,d.nwound); });
@@ -117,8 +122,6 @@
     		    width = 960 - margin.left - margin.right,
     		    height = 350 - margin.top - margin.bottom,
     		    height2 = 350 - margin2.top - margin2.bottom;
-
-    		var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
     		var x = d3.time.scale().range([0, width]),
     		    x2 = d3.time.scale().range([0, width]),
@@ -217,43 +220,95 @@
 
 
                         // update map data
+
                 d3.select("#map")
                     .selectAll("*")
                     .remove()
 
                 chart = chart.map(mapJSON);
-
                 d3.csv("../Dataset/data.csv", function(dataError, dataJSON) {
                     if (processError(dataError)) return;
-                    chart = chart.values(includedData(dataJSON, brush));
-                    //chart = chart.values(dataJSON);
-
+                    if (brush.empty()) {
+                        chart = chart.values(dataJSON)
+                    } else if (!brush.empty()) {
+                        chart = chart.values(includedData(dataJSON,brush))
+                    }
                     chart("map");
                 });
+
+
             }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-            // Wait until the map is drawn before loading
-            // and drawing the data values
-            // d3.csv("../Dataset/data.csv", function(dataError, dataJSON) {
-            //     if (processError(dataError)) return;
-            //     console.log("DataJSON")
-            //     console.log(dataJSON)
-            //     // less_dataJSON = function(d) {
-            //     // 	if parseDate2(d.Date) >= x.domain()[0] && parseDate2(d.Date) <= x.domain()[1] {
-
-            //     // }
-            //     // }
-            //     // chart = chart.values(includedData(dataJSON, brush));
-            //     chart = chart.values(dataJSON);
-
-            //     // console.log(includedData(dataJSON, brush))
-            //     chart("map");
-            // });
+            chart = chart.map(mapJSON);
+            d3.csv("../Dataset/data.csv", function(dataError, dataJSON) {
+                if (processError(dataError)) return;
+                chart = chart.values(dataJSON);
+                chart("map");
+            });
         });
 
+var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+    'August', 'September', 'October', 'November', 'December'];
 
+var years = [];
+for(var i = 1970; i < 2013; i++)
+    i % 10 === 0 ? years.push(i) : years.push('');
+
+d3.csv("../Dataset/data2.csv", function(error, data) {
+    data.forEach(function(d) {
+        d.month = parseDate(d.month);
+        d.killed = +d.killed
+    });
+
+    var ki = [];
+    for (var i = 0; i < data.length; i++)
+        ki[i] = data[i].killed;
+
+    console.log(ki)
+
+    var chart = circularHeatChart()
+        .segmentHeight(7)
+        .segmentLabels(months)
+        .radialLabels(years)
+        .innerRadius(30)
+        .numSegments(12)
+        .range(["#92c5de", "#8A0707"])
+        .accessor(function(d) {return d.value;});
+
+    var data_list = [];
+    for(var i=0; i<516; i++) data_list[i] = {title: months[i%12]+ ' ' + (1969+Math.floor(i/12)), value: Math.round(ki[i])};
+    console.log(data_list)
+
+    var tooltip = d3.select("#heat").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    d3.select('#heat')
+        .selectAll("svg")
+        .data([data_list])
+        .enter()
+        .append("svg")
+        .call(chart)
+        .style("height","700px")
+        .style("width","700px");
+
+    d3.selectAll("#heat path").on('mouseover', function() {
+        var d = d3.select(this).data()[0];
+        tooltip.transition()
+            .duration(200)
+            .style("opacity", 1);
+        tooltip.html(d.value + ' people were killed in ' + d.title)
+            .style("left", (d3.event.pageX + 5) + "px")
+            .style("top", (d3.event.pageY - 28) + "px");
+        })
+    d3.selectAll("#heat path").on('mouseout', function() {
+        var d = d3.select(this).data()[0];
+        tooltip.transition()
+            .duration(200)
+            .style("opacity", 0);
+    })
+      
+  });
 </script>

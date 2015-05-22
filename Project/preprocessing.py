@@ -28,7 +28,7 @@ data = npgtd[:,[col_num[c] for c in wanted_columns]]
 filtered = np.array(filter(lambda x: x[6] >= 0 or x[6] <= 0, data))
 filtered2 = np.array(filter(lambda x: x[7] >= 0 or x[7] <= 0, filtered))
 
-filtered3 = filter(lambda x: x[9] + x[10] > 30, filtered2)
+filtered3 = filter(lambda x: x[9] + x[10] > 50, filtered2)
 filtered4 = np.array(filter(lambda x: x[0] > 0 and x[1] > 0 and x[2] > 0,
                             filtered3))
 
